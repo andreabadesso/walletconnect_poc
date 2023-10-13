@@ -1,0 +1,68 @@
+unset shellHook
+PATH=${PATH:-}
+nix_saved_PATH="$PATH"
+XDG_DATA_DIRS=${XDG_DATA_DIRS:-}
+nix_saved_XDG_DATA_DIRS="$XDG_DATA_DIRS"
+BASH='/nix/store/5jlfqjgr34crcljr8r93kwg2rk5psj9a-bash-interactive-5.2-p15/bin/bash'
+HOSTTYPE='aarch64'
+IFS=' 	
+'
+IN_NIX_SHELL='impure'
+export IN_NIX_SHELL
+LINENO='76'
+MACHTYPE='aarch64-apple-darwin22.3.0'
+NIX_BUILD_CORES='0'
+export NIX_BUILD_CORES
+NIX_STORE='/nix/store'
+export NIX_STORE
+OLDPWD=''
+export OLDPWD
+OPTERR='1'
+OSTYPE='darwin22.3.0'
+PATH='/path-not-set'
+export PATH
+PS4='+ '
+SHELL='/sbin/nologin'
+builder='/nix/store/5jlfqjgr34crcljr8r93kwg2rk5psj9a-bash-interactive-5.2-p15/bin/bash'
+export builder
+dontAddDisableDepTrack='1'
+export dontAddDisableDepTrack
+name='devshell'
+export name
+out='/Users/andrecardoso/Dev/hathor/walletconnect_poc2/outputs/out'
+export out
+outputs='out'
+shellHook='# Remove all the unnecessary noise that is set by the build env
+unset NIX_BUILD_TOP NIX_BUILD_CORES NIX_STORE
+unset TEMP TEMPDIR TMP TMPDIR
+unset builder name out shellHook stdenv system
+# Flakes stuff
+unset dontAddDisableDepTrack outputs
+
+# For `nix develop`
+if [[ "$SHELL" == "/noshell" ]]; then
+  export SHELL=/nix/store/5jlfqjgr34crcljr8r93kwg2rk5psj9a-bash-interactive-5.2-p15/bin/bash
+fi
+
+# Load the environment
+source "/nix/store/liw5nyz0cjl0bl8ik90s92ivkisyv71z-devshell-dir/env.bash"
+'
+export shellHook
+stdenv='/nix/store/q1bp0rxl7mhjs3x1jgfb3vgpzrhdb332-naked-stdenv'
+export stdenv
+system='aarch64-darwin'
+export system
+runHook ()
+{
+ 
+    eval "$shellHook";
+    unset runHook
+}
+PATH="$PATH:$nix_saved_PATH"
+XDG_DATA_DIRS="$XDG_DATA_DIRS:$nix_saved_XDG_DATA_DIRS"
+export NIX_BUILD_TOP="$(mktemp -d -t nix-shell.XXXXXX)"
+export TMP="$NIX_BUILD_TOP"
+export TMPDIR="$NIX_BUILD_TOP"
+export TEMP="$NIX_BUILD_TOP"
+export TEMPDIR="$NIX_BUILD_TOP"
+eval "$shellHook"
