@@ -14,7 +14,7 @@ export const DEFAULT_MAIN_CHAINS = [
   "polkadot:91b171bb158e2d3848fa23a9f1c25182",
   "elrond:1",
   "tron:0x2b6653dc",
-  "hathor:mainnet",
+  "hathor:testnet",
 ];
 
 export const DEFAULT_TEST_CHAINS = [
@@ -127,7 +127,8 @@ export enum DEFAULT_TRON_METHODS {
 export enum DEFAULT_TRON_EVENTS {}
 
 export enum DEFAULT_HATHOR_METHODS {
-  HATHOR_SIGN_MESSAGE = "hathor_signMessage",
+  HATHOR_SIGN_MESSAGE = "htr_signWithAddress",
+  HATHOR_SEND_NANO_TX = "htr_sendNanoContractTx"
 }
 
 export enum DEFAULT_HATHOR_EVENTS {}

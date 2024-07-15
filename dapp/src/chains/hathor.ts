@@ -20,12 +20,12 @@ export const HathorChainData: ChainsMap = {
 export const HathorMetadata: NamespaceMetadata = {
   // Hathor Mainnet
   "mainnet": {
-    logo: "https://hathor.network/theme/img/hathor-logo-black.png",
+    logo: "https://icoholder.com/media/cache/ico_logo_view_page/files/img/3da29e8fcf45923a8ccefa52e91f107d.jpeg",
     rgb: "183, 62, 49",
   },
   // Hathor TestNet
   "testnet": {
-    logo: "https://hathor.network/theme/img/hathor-logo-black.png",
+    logo: "https://icoholder.com/media/cache/ico_logo_view_page/files/img/3da29e8fcf45923a8ccefa52e91f107d.jpeg",
     rgb: "183, 62, 49",
   },
 };

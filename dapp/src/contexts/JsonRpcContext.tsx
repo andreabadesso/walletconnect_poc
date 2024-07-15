@@ -100,6 +100,7 @@ interface IContext {
   };
   hathorRpc: {
     testSignMessage: TRpcRequestCallback;
+    testSendNanoContractTx: TRpcRequestCallback;
   };
   rpcResult?: IFormattedRpcResponse | null;
   isRpcRequestPending: boolean;
@@ -1065,20 +1066,97 @@ export function JsonRpcContextProvider({
 
   // -------- TRON RPC METHODS --------
 
+const initialize = {
+  id: 3,
+  topic: '6514868878fe1dadd648a495692d5ab9d458c7d45876f2c63e1e7274640a53d4',
+  jsonrpc: '2.0',
+  params: {
+    request: {
+      method: 'htr_sendNanoContractTx',
+      params: {
+        push_tx: true,
+        network: 'testnet',
+        method: 'initialize',
+        blueprint_id: '3cb032600bdf7db784800e4ea911b10676fa2f67591f82bb62628c234e771595',
+        args: [
+          '76a914969647cffd30891b1444944ff228f3bd7582fa4588ac',
+          '00',
+          Math.ceil(new Date().getTime() / 1000),
+        ],
+      },
+    },
+  },
+};
+
   const hathorRpc = {
+    testSendNanoContractTx: _createJsonRpcRequestHandler(
+      async (
+        chainId: string,
+        address: string,
+      ): Promise<IFormattedRpcResponse> => {
+        try {
+          const result = await client!.request<{ result: any }>({
+            chainId,
+            topic: session!.topic,
+            request: {
+              "method": "htr_sendNanoContractTx",
+              "params": {
+                "push_tx": true,
+                "network": "testnet",
+                "method": "bet",
+                "blueprint_id": "3cb032600bdf7db784800e4ea911b10676fa2f67591f82bb62628c234e771595",
+                "nc_id": "00002a71944472852754ed2f53dbd366b90b090bb319715e82f7fe0e786f0553",
+                "actions": [
+                  {
+                    "type": "deposit",
+                    "token": "00",
+                    "amount": 1
+                  }, {
+                    "type": "deposit",
+                    "token": "00",
+                    "amount": 100
+                  }, {
+                    "type": "deposit",
+                    "token": "00",
+                    "amount": 1
+                  }
+                ],
+                "args": [
+                  "49a2f4c21b3f3219345eeaebf44ece0cbfaa13859577246ce5",
+                  "true"
+                ]
+              }
+            }
+          });
+
+          console.log('result: ', result);
+
+          return {
+            method: DEFAULT_HATHOR_METHODS.HATHOR_SEND_NANO_TX,
+            address,
+            valid: true,
+            result: JSON.stringify(result) as unknown as string,
+          };
+        } catch (error: any) {
+          console.log('Error: ', error);
+          throw new Error(error);
+        }
+      }
+    ),
     testSignMessage: _createJsonRpcRequestHandler(
       async (
         chainId: string,
         address: string
       ): Promise<IFormattedRpcResponse> => {
         try {
-          const { result } = await client!.request<{ result: any }>({
+          const result = await client!.request<{ result: any }>({
             chainId,
             topic: session!.topic,
             request: {
               method: DEFAULT_HATHOR_METHODS.HATHOR_SIGN_MESSAGE,
               params: {
-                address,
+                network: 'testnet',
+                addressIndex: 0,
                 message: 'Please sign me!',
               },
             },
@@ -1088,9 +1166,10 @@ export function JsonRpcContextProvider({
             method: DEFAULT_HATHOR_METHODS.HATHOR_SIGN_MESSAGE,
             address,
             valid: true,
-            result: result.signature,
+            result: result as unknown as string,
           };
         } catch (error: any) {
+          console.log('Error: ', error);
           throw new Error(error);
         }
       }

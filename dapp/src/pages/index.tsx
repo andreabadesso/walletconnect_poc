@@ -292,10 +292,18 @@ const Home: NextPage = () => {
       openRequestModal();
       await hathorRpc.testSignMessage(chainId, address);
     };
+    const onSendNanoTx = async (chainId: string, address: string) => {
+      openRequestModal();
+      await hathorRpc.testSendNanoContractTx(chainId, address);
+    };
     return [
       {
         method: DEFAULT_HATHOR_METHODS.HATHOR_SIGN_MESSAGE,
         callback: onSignMessage,
+      },
+      {
+        method: DEFAULT_HATHOR_METHODS.HATHOR_SEND_NANO_TX,
+        callback: onSendNanoTx,
       },
     ];
   };
