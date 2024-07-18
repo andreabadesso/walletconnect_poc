@@ -101,6 +101,7 @@ interface IContext {
   hathorRpc: {
     testSignMessage: TRpcRequestCallback;
     testSendNanoContractTx: TRpcRequestCallback;
+    testSignOracleData: TRpcRequestCallback;
   };
   rpcResult?: IFormattedRpcResponse | null;
   isRpcRequestPending: boolean;
@@ -1089,6 +1090,51 @@ const initialize = {
 };
 
   const hathorRpc = {
+    testCreateNanoContract: _createJsonRpcRequestHandler(
+      async (
+        chainId: string,
+        address: string,
+      ): Promise<IFormattedRpcResponse> => {
+        try {
+          const result = await client!.request<{ result: any }>({
+            chainId,
+            topic: session!.topic,
+            request: {
+              "method": "htr_sendNanoContractTx",
+              "params": {
+                "push_tx": true,
+                "network": "testnet",
+                "method": "bet",
+                "blueprint_id": "3cb032600bdf7db784800e4ea911b10676fa2f67591f82bb62628c234e771595",
+                "actions": [
+                  {
+                    "type": "deposit",
+                    "token": "00",
+                    "amount": 1
+                  }
+                ],
+                "args": [
+                  "49a2f4c21b3f3219345eeaebf44ece0cbfaa13859577246ce5",
+                  "true"
+                ]
+              }
+            }
+          });
+
+          console.log('result: ', result);
+
+          return {
+            method: DEFAULT_HATHOR_METHODS.HATHOR_SEND_NANO_TX,
+            address,
+            valid: true,
+            result: JSON.stringify(result) as unknown as string,
+          };
+        } catch (error: any) {
+          console.log('Error: ', error);
+          throw new Error(error);
+        }
+      }
+    ),
     testSendNanoContractTx: _createJsonRpcRequestHandler(
       async (
         chainId: string,
@@ -1108,14 +1154,6 @@ const initialize = {
                 "nc_id": "00002a71944472852754ed2f53dbd366b90b090bb319715e82f7fe0e786f0553",
                 "actions": [
                   {
-                    "type": "deposit",
-                    "token": "00",
-                    "amount": 1
-                  }, {
-                    "type": "deposit",
-                    "token": "00",
-                    "amount": 100
-                  }, {
                     "type": "deposit",
                     "token": "00",
                     "amount": 1
@@ -1174,68 +1212,40 @@ const initialize = {
         }
       }
     ),
-  };
-
-  const tronRpc = {
-    testSignTransaction: _createJsonRpcRequestHandler(
+    testSignOracleData: _createJsonRpcRequestHandler(
       async (
         chainId: string,
         address: string
       ): Promise<IFormattedRpcResponse> => {
-        // Nile TestNet, if you want to use in MainNet, change the fullHost to 'https://api.trongrid.io'
-        const fullHost = isTestnet
-          ? "https://nile.trongrid.io/"
-          : "https://api.trongrid.io/";
-
-        const tronWeb = new TronWeb({
-          fullHost,
-        });
-
-        // Take USDT as an example:
-        // Nile TestNet: https://nile.tronscan.org/#/token20/TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf
-        // MainNet: https://tronscan.org/#/token20/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t
-
-        const testContract = isTestnet
-          ? "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf"
-          : "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
-        const testTransaction =
-          await tronWeb.transactionBuilder.triggerSmartContract(
-            testContract,
-            "approve(address,uint256)",
-            { feeLimit: 200000000 },
-            [
-              { type: "address", value: address },
-              { type: "uint256", value: 0 },
-            ],
-            address
-          );
-
         try {
-          const { result } = await client!.request<{ result: any }>({
+          const result = await client!.request<{ result: any }>({
             chainId,
             topic: session!.topic,
             request: {
-              method: DEFAULT_TRON_METHODS.TRON_SIGN_TRANSACTION,
+              method: DEFAULT_HATHOR_METHODS.HATHOR_SIGN_ORACLE_DATA,
               params: {
-                address,
-                transaction: {
-                  ...testTransaction,
-                },
+                network: 'testnet',
+                oracle: address,
+                data: '2x0',
               },
             },
           });
 
           return {
-            method: DEFAULT_TRON_METHODS.TRON_SIGN_TRANSACTION,
+            method: DEFAULT_HATHOR_METHODS.HATHOR_SIGN_ORACLE_DATA,
             address,
             valid: true,
-            result: result.signature,
+            result: JSON.stringify(result),
           };
         } catch (error: any) {
+          console.log('Error: ', error);
           throw new Error(error);
         }
       }
     ),
+  };
+
+  const tronRpc = {
     testSignMessage: _createJsonRpcRequestHandler(
       async (
         chainId: string,

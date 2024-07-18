@@ -296,6 +296,10 @@ const Home: NextPage = () => {
       openRequestModal();
       await hathorRpc.testSendNanoContractTx(chainId, address);
     };
+    const onSignOracleData = async (chainId: string, address: string) => {
+      openRequestModal();
+      await hathorRpc.testSignOracleData(chainId, address);
+    };
     return [
       {
         method: DEFAULT_HATHOR_METHODS.HATHOR_SIGN_MESSAGE,
@@ -305,6 +309,10 @@ const Home: NextPage = () => {
         method: DEFAULT_HATHOR_METHODS.HATHOR_SEND_NANO_TX,
         callback: onSendNanoTx,
       },
+      {
+        method: DEFAULT_HATHOR_METHODS.HATHOR_SIGN_ORACLE_DATA,
+        callback: onSignOracleData,
+      }
     ];
   };
 
